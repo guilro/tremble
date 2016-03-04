@@ -1,0 +1,51 @@
+'use strict';
+
+const co = require('co');
+const coEvent = require('co-event');
+const spawn = require('child_process').spawn;
+const git = require('nodegit');
+const path = require('path');
+const rimrafAsync = require('bluebird').promisify(require('rimraf'));
+const uuid = require('uuid');
+
+/**
+ * Create a test runner instance.
+ * @param {Object} options
+ * @param {string} options.repository
+ * @param {string} options.branch
+ * @param {string} options.command
+ * @param {string} options.path
+ * @param {string} options.timeout
+ */
+var tremble = co.wrap(function *(options, cb) {
+  try {
+    const dir = options.path || path.join('./tmp', uuid.v4());
+    var repo = yield git.Clone(options.repository, dir);
+    var commit = yield repo.getBranchCommit(options.branch);
+    yield git.Checkout.tree(repo, commit);
+
+    var child = spawn(options.command, {cwd: dir, timeout: options.timeout || 0});
+    var e = yield coEvent(child);
+    while (e) {
+      switch (e.type) {
+        case 'close':
+          yield rimrafAsync(dir, {disableGlob: true});
+          if (typeof cb === 'function') {
+            return cb(null, e.args[0]);
+          }
+          return e.args[0];
+        default:
+          break;
+      }
+      e = yield coEvent(child);
+    }
+  } catch (e) {
+    if (typeof cb === 'function') {
+      return cb(e);
+    }
+
+    throw e;
+  }
+});
+
+module.exports = tremble;
