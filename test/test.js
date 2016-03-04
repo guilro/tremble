@@ -56,6 +56,10 @@ describe('promise interface', function() {
           command: 'bash -c "exit 0"'
         });
       } catch (e) {
+        /*
+        Ok there was an error ! (No need for checking error type, the only
+        difference with previous tests is the non-existent-branch.
+        */
         assert.throws(() => {
           fs.statSync(dir);
         }, e => (e.code === 'ENOENT'), 'Directory is still present !');
