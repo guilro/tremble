@@ -2,7 +2,7 @@
 
 const co = require('co');
 const coEvent = require('co-event');
-const spawn = require('child_process').spawn;
+const exec = require('child_process').exec;
 const git = require('nodegit');
 const path = require('path');
 const rimrafAsync = require('bluebird').promisify(require('rimraf'));
@@ -24,12 +24,11 @@ var tremble = co.wrap(function *(options, cb) {
     var commit = yield repo.getBranchCommit(options.branch);
     yield git.Checkout.tree(repo, commit);
 
-    var child = spawn(options.command, {cwd: dir, timeout: options.timeout || 0});
+    var child = exec(options.command, {cwd: dir, timeout: options.timeout || 0});
     var e = yield coEvent(child);
     while (e) {
       switch (e.type) {
-        case 'close':
-          yield rimrafAsync(dir, {disableGlob: true});
+        case 'exit':
           if (typeof cb === 'function') {
             return cb(null, e.args[0]);
           }
@@ -45,6 +44,8 @@ var tremble = co.wrap(function *(options, cb) {
     }
 
     throw e;
+  } finally {
+    yield rimrafAsync(dir, {disableGlob: true});
   }
 });
 

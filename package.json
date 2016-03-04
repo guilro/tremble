@@ -4,11 +4,11 @@
   "description": "Tremble is a very minimalist CI utility in javascript.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test mocha --reporter list --recursive"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/guilro/tremble.git"
+    "url": "https://github.com/guilro/tremble.git"
   },
   "keywords": [
     "test",
@@ -21,8 +21,10 @@
   },
   "homepage": "https://github.com/guilro/tremble#readme",
   "devDependencies": {
+    "co-mocha": "^1.1.2",
     "eslint": "^2.2.0",
-    "eslint-config-google": "^0.4.0"
+    "eslint-config-google": "^0.4.0",
+    "mocha": "^2.4.5"
   },
   "dependencies": {
     "bluebird": "^3.3.3",
