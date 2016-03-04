@@ -14,12 +14,12 @@ const uuid = require('uuid');
  * @param {string} options.repository
  * @param {string} options.branch
  * @param {string} options.command
- * @param {string} options.path
+ * @param {string} options.directory
  * @param {string} options.timeout
  */
 var tremble = co.wrap(function *(options, cb) {
+  const dir = options.directory || path.join('./tmp', uuid.v4());
   try {
-    const dir = options.path || path.join('./tmp', uuid.v4());
     var repo = yield git.Clone(options.repository, dir);
     var commit = yield repo.getBranchCommit(options.branch);
     yield git.Checkout.tree(repo, commit);
