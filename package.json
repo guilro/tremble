@@ -27,9 +27,16 @@
     "mocha": "^2.4.5"
   },
   "dependencies": {
-    "bluebird": "^3.3.3",
+    "bluebird": "^3.3.4",
+    "body-parser": "^1.15.0",
+    "bunyan": "^1.7.1",
     "co": "^4.6.0",
     "co-event": "^0.1.0",
+    "co-express": "^1.2.1",
+    "express": "^4.13.4",
+    "jade": "^1.11.0",
+    "morgan": "^1.7.0",
+    "mz": "^2.3.1",
     "nodegit": "^0.11.6",
     "rimraf": "^2.5.2",
     "uuid": "^2.0.1"

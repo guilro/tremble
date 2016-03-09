@@ -9,6 +9,7 @@ const rimrafAsync = require('bluebird').promisify(require('rimraf'));
 const uuid = require('uuid');
 
 /**
+ * @function tremble
  * Create a test runner instance.
  * @param {Object} options
  * @param {string} options.repository
