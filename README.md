@@ -1,5 +1,5 @@
 # tremble
-Tremble is a very simple CI tool in Javascript. It provides a simple server
+Tremble is a very simple CI tool in Javascript. It provides a simple server supporting GitLab merge requests.
 
 ![dependencies](https://david-dm.org/guilro/tremble.svg)
 
