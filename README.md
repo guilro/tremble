@@ -3,11 +3,16 @@ Tremble is a very simple CI tool in Javascript. It provides a simple server
 
 ![dependencies](https://david-dm.org/guilro/tremble.svg)
 
+**Table of Contents**
+ 1. [Server](#server)
+    1. [Supported services](#supported-services)
+        1. [GitLab](#gitlab)
+ 2. [Library](#library)
+
 ## Server
 
 Tremble provides a CI server ready to run (preferably in Docker), that you
 can build in 3 steps.
-
 1. Create a new node project with `npm init` and install Tremble with `npm install tremble-ci --save`
 2. Create an `index.js` file configuring and launching the server.
 3. Create a `Dockerfile` and run `docker`.
@@ -34,9 +39,16 @@ VOLUME ["/data"]
 EXPOSE 3000
 ```
 
-## Library
+### Supported services
 
-Tremble provides both promise and callback interface.
+Only [GitLab](https://about.gitlab.com/) merge requests events are supported at the moment.
+
+#### GitLab
+
+`/trigger/gitlab` accepts [GitLab merge request hooks](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/web_hooks/web_hooks.md). One you have installed a Tremble server, you can just register `{your host}/trigger/gitlab` as the hook for merge requests.
+
+## Use only the library
+You can use just the test runner without using the server. Tremble provides both promise and callback interface.
 `tremble()` will return a promise if you do not provide a callback.
 
 ```javascript
