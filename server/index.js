@@ -42,6 +42,12 @@ var trembleServer = options => {
 
   app.use(bodyParser.json());
 
+  app.use((req, res, next) => {
+    res.locals.version = require('../package.json').version;
+
+    return next();
+  });
+
   app.get('/', wrap(function *(req, res) {
     var content = yield fs.readFile(testsLogFileName);
     var lines = content.toString()
