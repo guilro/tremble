@@ -20,9 +20,8 @@ const server = require('tremble-ci/server');
 const path = require('path');
 
 server({
-
   command: 'bash ' + path.join(__dirname, 'my_validating_script.sh'), // Required. Do not forget to put absolute path for files not in your PATH
-  dataDir: '/data' // Required
+  dataDir: path.join(__dirname, 'data') // Required, absolute path
 }).listen(3000, () => {
   console.log('CI server listening on port 3000 !');
 });
@@ -47,7 +46,7 @@ tremble({
     repository: 'https://github.com/guilro/commentit', // Required
     branch: 'master', // Required
     command: 'npm test', // Required, auto cwd in the repository
-    directory: './tmp/gitdirectory', // Directory where to clone the repository, defaults to ./tmp/<randomNumber>, removed after test
+    directory: './tmp/gitdirectory', // Directory where to clone the repository, defaults to a tmp/<randomNumber> in the module directory, removed after test
     timeout: 0 // Timeout for your command
 }, function(err, code) {
     if (err) {
