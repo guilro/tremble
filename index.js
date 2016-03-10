@@ -19,7 +19,7 @@ const uuid = require('uuid');
  * @param {string} options.timeout
  */
 var tremble = co.wrap(function *(options, cb) {
-  const dir = options.directory || path.join('./tmp', uuid.v4());
+  const dir = options.directory || path.join(__dirname, 'tmp', uuid.v4());
   try {
     var repo = yield git.Clone(options.repository, dir);
     var commit = yield repo.getBranchCommit(options.branch);

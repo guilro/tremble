@@ -86,10 +86,8 @@ var trembleServer = options => {
     } catch (e) {
       internalLog.error(e);
 
-      line.result = 'error';
-      historyLog.info(line);
       return res.status(500).json({
-        error: 'Server error'
+        error: 'Server error or bad request.'
       });
     }
   }));

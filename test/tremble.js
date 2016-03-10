@@ -13,7 +13,7 @@ describe('promise interface', function() {
   it(
     'should clone, run a command, return 0 exit code, leave nothing behind',
     co.wrap(function *() {
-      const dir = path.join('./tmp', uuid.v4());
+      const dir = path.join(__dirname, 'data/tmp', uuid.v4());
       var exitCode = yield tremble({
         repository: require('../package.json').repository.url,
         branch: 'master',
@@ -30,7 +30,7 @@ describe('promise interface', function() {
   it(
     'should clone, run a command, return 100 exit code, leave nothing behind',
     co.wrap(function *() {
-      const dir = path.join('./tmp', uuid.v4());
+      const dir = path.join(__dirname, 'data/tmp', uuid.v4());
       var exitCode = yield tremble({
         repository: require('../package.json').repository.url,
         branch: 'master',
@@ -47,7 +47,7 @@ describe('promise interface', function() {
   it(
     'should clone, error, not run the command, still leave nothing behind',
     co.wrap(function *() {
-      const dir = path.join('./tmp', uuid.v4());
+      const dir = path.join(__dirname, 'data/tmp', uuid.v4());
       try {
         yield tremble({
           repository: require('../package.json').repository.url,
