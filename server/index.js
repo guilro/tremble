@@ -16,6 +16,7 @@ const wrap = require('co-express');
  * @param {Object} options          Options to send to the server
  * @param {string} options.dataDir  Directory where logs and history will be stored.
  * @param {string} options.command  Command to run in the project.
+ * @param {string} options.pageTitle Page title for the web interface.
  * @return {Object} An Express app fully configured. Run listen() on it.
  */
 var trembleServer = options => {
@@ -44,6 +45,7 @@ var trembleServer = options => {
 
   app.use((req, res, next) => {
     res.locals.version = require('../package.json').version;
+    res.locals.title = options.pageTitle || "Tremble v" + res.locals.version;
 
     return next();
   });

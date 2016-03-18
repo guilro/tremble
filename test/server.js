@@ -16,7 +16,8 @@ describe('Request on the server', function() {
   before(co.wrap(function *() {
     context.appFailure = server({
       command: 'bash -c "exit 1"',
-      dataDir: path.join(__dirname, 'data')
+      dataDir: path.join(__dirname, 'data'),
+      pageTitle: 'Configured page title'
     });
     context.appSuccess = server({
       command: 'bash -c "exit 0"',
@@ -95,6 +96,12 @@ describe('Request on the server', function() {
       request(context.appFailure)
         .get('/')
         .expect(200, /\[FAILURE\].*\[SUCCESS\]/, done);
+    });
+
+    it('should contain configured page title', function(done) {
+      request(context.appFailure)
+        .get('/')
+        .expect(200, /Configured page title/, done);
     });
   });
 });

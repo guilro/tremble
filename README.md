@@ -26,7 +26,8 @@ const path = require('path');
 
 server({
   command: 'bash ' + path.join(__dirname, 'my_validating_script.sh'), // Required. Do not forget to put absolute path for files not in your PATH
-  dataDir: path.join(__dirname, 'data') // Required, absolute path
+  dataDir: path.join(__dirname, 'data'), // Required, absolute path
+  pageTitle: 'My software tests' // Optional, page title for the web interface
 }).listen(3000, () => {
   console.log('CI server listening on port 3000 !');
 });
