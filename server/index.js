@@ -92,7 +92,7 @@ var trembleServer = options => {
         result: 'failure'
       });
     } catch (e) {
-      internalLog.error(e);
+      internalLog.error({err: eo, req: req});
 
       return res.status(500).json({
         error: 'Server error or bad request.'
