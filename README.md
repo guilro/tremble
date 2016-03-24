@@ -13,6 +13,7 @@ Tremble is a very simple CI tool in Javascript. It provides a simple server supp
 
 Tremble provides a CI server ready to run (preferably in Docker), that you
 can build in 3 steps.
+
 1. Create a new node project with `npm init` and install Tremble with `npm install tremble-ci --save`
 2. Create an `index.js` file configuring and launching the server.
 3. Create a `Dockerfile` and run `docker`.
