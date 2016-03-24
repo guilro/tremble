@@ -33,3 +33,9 @@ html(class="no-js" lang="en")
               a(href=line.commitUrl)= line.commitId.slice(0, 7)
             td= line.commitMessage
             td= line.commitAuthor.name + '<' + line.commitAuthor.email + '>'
+          if line.stdout
+            tr(class=(line.result === 'success' ? 'success' : (line.result === 'failure' ? 'warning' : 'danger')))
+              td
+              td(colspan=5)
+                p Output
+                pre= line.stdout

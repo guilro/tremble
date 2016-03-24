@@ -15,7 +15,7 @@ describe('Request on the server', function() {
 
   before(co.wrap(function *() {
     context.appFailure = server({
-      command: 'bash -c "exit 1"',
+      command: 'bash -c "echo failure reason; exit 1"',
       dataDir: path.join(__dirname, 'data'),
       pageTitle: 'Configured page title'
     });
@@ -53,13 +53,14 @@ describe('Request on the server', function() {
           }, done);
       });
 
-      it('should record it in tests.log', co.wrap(function *() {
+      it('should write in tests.log, with stdout', co.wrap(function *() {
         var content = yield fs.readFile(path.join(__dirname, 'data/tests.log'));
         var lines = content.toString()
           .split('\n').slice(-2, -1)
           .map(line => (JSON.parse(line)));
 
         assert.equal(lines[0].result, 'failure');
+        assert.equal(lines[0].stdout, 'failure reason\n');
       }));
     });
   });
@@ -107,7 +108,13 @@ describe('Request on the server', function() {
     it('should return HTML page with tests history', function(done) {
       request(context.appFailure)
         .get('/')
-        .expect(200, /\[FAILURE\].*\[SUCCESS\]/, done);
+        .expect(200, /\[FAILURE\](.|\n)*\[SUCCESS\]/, done);
+    });
+
+    it('should return HTML page with stdout', function(done) {
+      request(context.appFailure)
+          .get('/')
+          .expect(200, /failure reason/, done);
     });
 
     it('should contain configured page title', function(done) {

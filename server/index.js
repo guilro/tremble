@@ -7,6 +7,7 @@ const fs = require('mz/fs');
 const morgan = require('morgan');
 const path = require('path');
 const tremble = require('../');
+const stream = require('stream');
 const uuid = require('uuid');
 const wrap = require('co-express');
 const _ = require('lodash');
@@ -62,45 +63,52 @@ var trembleServer = options => {
 
   app.post('/trigger/gitlab', wrap(function *(req, res) {
     try {
-      var line;
-      var repoParams;
+      var line = {
+        result: 'failure',
+        id: undefined,
+        commitId: undefined,
+        commitUrl: undefined,
+        commitAuthor: undefined,
+        commitMessage: undefined,
+        stdout: ''
+      };
+
+      var out = new stream.Writable({
+        write: function(chunk, encoding, next) {
+          line.stdout += chunk;
+          next();
+        }
+      });
+
+      var repoParams = {
+        repository: undefined,
+        branch: undefined,
+        command: options.command,
+        directory: path.join(options.dataDir, 'tmp', uuid.v4()),
+        out: out
+      };
 
       switch (req.body.object_kind) {
         case 'merge_request':
           var merge = req.body.object_attributes;
-          line = {
-            result: 'failure',
-            id: '#' + merge.id,
-            commitId: merge.last_commit.id,
-            commitUrl: merge.last_commit.url,
-            commitAuthor: merge.last_commit.author,
-            commitMessage: merge.last_commit.message
-          };
+          line.id = '#' + merge.id;
+          line.commitId = merge.last_commit.id;
+          line.commitUrl = merge.last_commit.url;
+          line.commitAuthor = merge.last_commit.author;
+          line.commitMessage = merge.last_commit.message;
 
-          repoParams = {
-            repository: merge.source.git_http_url,
-            branch: merge.source_branch,
-            command: options.command,
-            directory: path.join(options.dataDir, 'tmp', uuid.v4())
-          };
+          repoParams.repository = merge.source.git_http_url;
+          repoParams.branch = merge.source_branch;
           break;
         case 'push':
           var commit = _.find(req.body.commits, {id: req.body.after});
-          line = {
-            result: 'failure',
-            id: undefined,
-            commitId: commit.id,
-            commitUrl: commit.url,
-            commitAuthor: commit.author,
-            commitMessage: commit.message
-          };
+          line.commitId = commit.id;
+          line.commitUrl = commit.url;
+          line.commitAuthor = commit.author;
+          line.commitMessage = commit.message;
 
-          repoParams = {
-            repository: req.body.project.git_http_url,
-            branch: req.body.ref,
-            command: options.command,
-            directory: path.join(options.dataDir, 'tmp', uuid.v4())
-          };
+          repoParams.repository = req.body.project.git_http_url;
+          repoParams.branch = req.body.ref;
           break;
         default:
           break;
