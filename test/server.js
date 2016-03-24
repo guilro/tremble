@@ -30,11 +30,23 @@ describe('Request on the server', function() {
   }));
 
   describe('POST /trigger/gitlab', function() {
+    describe('with hook', function() {
+      it('push', function(done) {
+        request(context.appFailure)
+          .post('/trigger/gitlab')
+          .send(require('./payload.json').push)
+          .expect('Content-Type', /json/)
+          .expect(200, {
+            result: "failure"
+          }, done);
+      });
+    });
+
     describe('with failing test', function() {
       it('should return failure', function(done) {
         request(context.appFailure)
           .post('/trigger/gitlab')
-          .send(require('./payload.json'))
+          .send(require('./payload.json').merge)
           .expect('Content-Type', /json/)
           .expect(200, {
             result: "failure"
@@ -44,7 +56,7 @@ describe('Request on the server', function() {
       it('should record it in tests.log', co.wrap(function *() {
         var content = yield fs.readFile(path.join(__dirname, 'data/tests.log'));
         var lines = content.toString()
-          .split('\n').slice(0, -1)
+          .split('\n').slice(-2, -1)
           .map(line => (JSON.parse(line)));
 
         assert.equal(lines[0].result, 'failure');
@@ -57,7 +69,7 @@ describe('Request on the server', function() {
       it('should return success', function(done) {
         request(context.appSuccess)
           .post('/trigger/gitlab')
-          .send(require('./payload.json'))
+          .send(require('./payload.json').merge)
           .expect('Content-Type', /json/)
           .expect(200, {
             result: "success"
@@ -67,17 +79,17 @@ describe('Request on the server', function() {
       it('should record it in tests.log', co.wrap(function *() {
         var content = yield fs.readFile(path.join(__dirname, 'data/tests.log'));
         var lines = content.toString()
-          .split('\n').slice(0, -1)
+          .split('\n').slice(-2, -1)
           .map(line => (JSON.parse(line)));
 
-        assert.equal(lines[1].result, 'success');
+        assert.equal(lines[0].result, 'success');
       }));
     });
   });
 
   describe('POST /trigger/gitlab', function() {
     describe('with error repo', function() {
-      var payload = JSON.parse(JSON.stringify(require('./payload.json')));
+      var payload = JSON.parse(JSON.stringify(require('./payload.json').merge));
       payload.object_attributes.source_branch = 'something wrong';
       it('should return error', function(done) {
         request(context.appSuccess)

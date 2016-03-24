@@ -9,6 +9,7 @@ const path = require('path');
 const tremble = require('../');
 const uuid = require('uuid');
 const wrap = require('co-express');
+const _ = require('lodash');
 
 /**
  * @function trembleServer
@@ -60,24 +61,52 @@ var trembleServer = options => {
   }));
 
   app.post('/trigger/gitlab', wrap(function *(req, res) {
-    var merge = req.body.object_attributes;
-    var line;
     try {
-      line = {
-        result: 'failure',
-        id: '#' + merge.id,
-        commitId: merge.last_commit.id,
-        commitUrl: merge.last_commit.url,
-        commitAuthor: merge.last_commit.author,
-        commitMessage: merge.last_commit.message
-      };
+      var line;
+      var repoParams;
 
-      var code = yield tremble({
-        repository: merge.source.git_http_url,
-        branch: merge.source_branch,
-        command: options.command,
-        directory: path.join(options.dataDir, 'tmp', uuid.v4())
-      });
+      switch (req.body.object_kind) {
+        case 'merge_request':
+          var merge = req.body.object_attributes;
+          line = {
+            result: 'failure',
+            id: '#' + merge.id,
+            commitId: merge.last_commit.id,
+            commitUrl: merge.last_commit.url,
+            commitAuthor: merge.last_commit.author,
+            commitMessage: merge.last_commit.message
+          };
+
+          repoParams = {
+            repository: merge.source.git_http_url,
+            branch: merge.source_branch,
+            command: options.command,
+            directory: path.join(options.dataDir, 'tmp', uuid.v4())
+          };
+          break;
+        case 'push':
+          var commit = _.find(req.body.commits, {id: req.body.after});
+          line = {
+            result: 'failure',
+            id: undefined,
+            commitId: commit.id,
+            commitUrl: commit.url,
+            commitAuthor: commit.author,
+            commitMessage: commit.message
+          };
+
+          repoParams = {
+            repository: req.body.project.git_http_url,
+            branch: req.body.ref,
+            command: options.command,
+            directory: path.join(options.dataDir, 'tmp', uuid.v4())
+          };
+          break;
+        default:
+          break;
+      }
+
+      var code = yield tremble(repoParams);
 
       if (code === 0) {
         line.result = 'success';
