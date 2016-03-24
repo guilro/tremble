@@ -17,6 +17,7 @@ const uuid = require('uuid');
  * @param {string} options.command
  * @param {string} options.directory
  * @param {string} options.timeout
+ * @param {stream.Writable} options.out
  */
 var tremble = co.wrap(function *(options, cb) {
   const dir = options.directory || path.join(__dirname, 'tmp', uuid.v4());
@@ -26,6 +27,11 @@ var tremble = co.wrap(function *(options, cb) {
     yield git.Checkout.tree(repo, commit);
 
     var child = exec(options.command, {cwd: dir, timeout: options.timeout || 0});
+
+    if (options.out && options.out.write) {
+      child.stdout.pipe(options.out);
+      child.stderr.pipe(options.out);
+    }
     var e = yield coEvent(child);
     while (e) {
       switch (e.type) {

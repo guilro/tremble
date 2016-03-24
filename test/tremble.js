@@ -5,6 +5,7 @@ const assert = require('assert');
 const co = require('co');
 const fs = require('fs');
 const path = require('path');
+const stream = require('stream');
 const tremble = require('../index');
 const uuid = require('uuid');
 
@@ -14,16 +15,25 @@ describe('promise interface', function() {
     'should clone, run a command, return 0 exit code, leave nothing behind',
     co.wrap(function *() {
       const dir = path.join(__dirname, 'data/tmp', uuid.v4());
+      var output = '';
+      var out = new stream.Writable({
+        write: function(chunk, encoding, next) {
+          output += chunk;
+          next();
+        }
+      });
       var exitCode = yield tremble({
         repository: require('../package.json').repository.url,
         branch: 'master',
         directory: dir,
-        command: 'bash -c "exit 0"'
+        command: 'bash -c "echo success; exit 0"',
+        out: out
       });
       assert.equal(exitCode, 0);
       assert.throws(() => {
         fs.statSync(dir);
       }, e => (e.code === 'ENOENT'), 'Directory is still present !');
+      assert.equal(output, 'success\n');
     })
   );
 
