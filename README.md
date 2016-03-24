@@ -1,5 +1,5 @@
 # tremble
-Tremble is a very simple CI tool in Javascript. It provides a simple server supporting GitLab merge requests.
+Tremble is a very simple CI tool in Javascript. It provides a simple server supporting GitLab merge requests and push events.
 
 ![dependencies](https://david-dm.org/guilro/tremble.svg)
 
@@ -42,11 +42,11 @@ EXPOSE 3000
 
 ### Supported services
 
-Only [GitLab](https://about.gitlab.com/) merge requests events are supported at the moment.
+Only [GitLab](https://about.gitlab.com/) merge requests and push events are supported at the moment.
 
 #### GitLab
 
-`/trigger/gitlab` accepts [GitLab merge request hooks](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/web_hooks/web_hooks.md). One you have installed a Tremble server, you can just register `{your host}/trigger/gitlab` as the hook for merge requests.
+`/trigger/gitlab` accepts [GitLab merge request and push hooks](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/web_hooks/web_hooks.md). One you have installed a Tremble server, you can just register `{your host}/trigger/gitlab` as the hook for merge requests and push.
 
 ## Use only the library
 You can use just the test runner without using the server. Tremble provides both promise and callback interface.
