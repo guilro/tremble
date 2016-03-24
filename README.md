@@ -61,7 +61,8 @@ tremble({
     branch: 'master', // Required
     command: 'npm test', // Required, auto cwd in the repository
     directory: './tmp/gitdirectory', // Directory where to clone the repository, defaults to a tmp/<randomNumber> in the module directory, removed after test
-    timeout: 0 // Timeout for your command
+    timeout: 0, // Timeout for your command
+    out: process.stdout // Any writable stream: the command stdout and stderr will be piped there
 }, function(err, code) {
     if (err) {
      console.log(err);
