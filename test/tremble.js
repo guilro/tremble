@@ -71,4 +71,18 @@ describe('promise interface', function() {
       throw new Error('no error were raised by tremble');
     })
   );
+
+  it(
+    'should run the command inside the repository',
+    co.wrap(function *() {
+      const dir = path.join(__dirname, 'data/tmp', uuid.v4());
+      var exitCode = yield tremble({
+        repository: require('../package.json').repository.url,
+        branch: 'master',
+        directory: dir,
+        command: 'bash -c "test $(pwd) = ' + dir + '"'
+      });
+      assert.equal(exitCode, 0);
+    })
+  );
 });
