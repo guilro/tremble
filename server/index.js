@@ -128,8 +128,9 @@ var trembleServer = options => {
       return res.status(200).json({
         result: 'failure'
       });
-    } catch (e) {
-      internalLog.error({err: e, req: req});
+    } catch (err) {
+      internalLog.error(err);
+      internalLog.error({req: req});
 
       return res.status(500).json({
         error: 'Server error or bad request.'

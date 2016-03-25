@@ -101,6 +101,16 @@ describe('Request on the server', function() {
             error: "Server error or bad request."
           }, done);
       });
+
+      it('should record it in error.log', co.wrap(function *() {
+        var content = yield fs.readFile(path.join(__dirname, 'data/error.log'));
+        var lines = content.toString()
+          .split('\n').slice(-3, -1)
+          .map(line => (JSON.parse(line)));
+
+        assert(lines[0].err.name);
+        assert(lines[1].req.body);
+      }));
     });
   });
 
