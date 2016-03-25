@@ -22,7 +22,14 @@ const uuid = require('uuid');
 var tremble = co.wrap(function *(options, cb) {
   const dir = options.directory || path.join(__dirname, 'tmp', uuid.v4());
   try {
-    var repo = yield git.Clone(options.repository, dir);
+    var cloneOptions = new git.CloneOptions();
+    cloneOptions.checkoutBranch = options.branch;
+
+    var repo = yield git.Clone(
+      options.repository,
+      dir,
+      cloneOptions
+    );
     var commit = yield repo.getBranchCommit(options.branch);
     yield git.Checkout.tree(repo, commit);
 

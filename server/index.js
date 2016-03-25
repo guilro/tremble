@@ -108,7 +108,7 @@ var trembleServer = options => {
           line.commitMessage = commit.message;
 
           repoParams.repository = req.body.project.git_http_url;
-          repoParams.branch = req.body.ref;
+          repoParams.branch = req.body.ref.split('/').slice(-1)[0];
           break;
         default:
           break;
@@ -131,6 +131,9 @@ var trembleServer = options => {
     } catch (err) {
       internalLog.error(err);
       internalLog.error({req: req});
+      if (app.get('env') === 'test') {
+        console.error(err);
+      }
 
       return res.status(500).json({
         error: 'Server error or bad request.'

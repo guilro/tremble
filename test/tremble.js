@@ -22,9 +22,36 @@ describe('promise interface', function() {
           next();
         }
       });
+
       var exitCode = yield tremble({
         repository: require('../package.json').repository.url,
         branch: 'master',
+        directory: dir,
+        command: 'bash -c "echo success; exit 0"',
+        out: out
+      });
+      assert.equal(exitCode, 0);
+      assert.throws(() => {
+        fs.statSync(dir);
+      }, e => (e.code === 'ENOENT'), 'Directory is still present !');
+      assert.equal(output, 'success\n');
+    })
+  );
+
+  it(
+    'should work also with other branches',
+    co.wrap(function *() {
+      const dir = path.join(__dirname, 'data/tmp', uuid.v4());
+      var output = '';
+      var out = new stream.Writable({
+        write: function(chunk, encoding, next) {
+          output += chunk;
+          next();
+        }
+      });
+      var exitCode = yield tremble({
+        repository: require('../package.json').repository.url,
+        branch: 'remote_test',
         directory: dir,
         command: 'bash -c "echo success; exit 0"',
         out: out
