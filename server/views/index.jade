@@ -25,7 +25,7 @@ html(class="no-js" lang="en")
           th Message
           th Author
         for line in lines
-          tr(class=(line.result === 'success' ? 'success': 'failure'))
+          tr(class=(line.result === 'success' ? 'success': 'warning'))
             td= '[' + line.result.toUpperCase() + ']'
             td= line.time
             td= line.id
