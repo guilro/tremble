@@ -36,6 +36,7 @@ var trembleServer = options => {
 
   app.set('views', path.join(__dirname, '/views'));
   app.set('view engine', 'jade');
+  app.engine('jade', require('jade').__express);
   app.enable('trust proxy');
 
   // Global middlewares
