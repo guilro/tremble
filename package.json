@@ -1,6 +1,6 @@
 {
   "name": "tremble-ci",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Tremble is a very minimalist CI utility in javascript.",
   "main": "index.js",
   "scripts": {
