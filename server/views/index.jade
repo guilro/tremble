@@ -25,7 +25,7 @@ html(class="no-js" lang="en")
           th Message
           th Author
         for line in lines
-          tr(class=(line.result === 'success' ? 'success' : (line.result === 'failure' ? 'warning' : 'danger')))
+          tr(class=(line.result === 'success' ? 'success': 'failure'))
             td= '[' + line.result.toUpperCase() + ']'
             td= line.time
             td= line.id
@@ -34,7 +34,7 @@ html(class="no-js" lang="en")
             td= line.commitMessage
             td= line.commitAuthor.name + '<' + line.commitAuthor.email + '>'
           if line.stdout
-            tr(class=(line.result === 'success' ? 'success' : (line.result === 'failure' ? 'warning' : 'danger')))
+            tr(class=(line.result === 'success' ? 'success' : 'warning'))
               td
               td(colspan=5)
                 p Output
