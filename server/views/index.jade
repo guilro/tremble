@@ -28,7 +28,9 @@ html(class="no-js" lang="en")
           tr(class=(line.result === 'success' ? 'success': 'warning'))
             td= '[' + line.result.toUpperCase() + ']'
             td= line.time
-            td= line.id
+            td
+              if line.mergeUrl
+                a(href=line.mergeUrl)=line.mergeId
             td
               a(href=line.commitUrl)= line.commitId.slice(0, 7)
             td= line.commitMessage

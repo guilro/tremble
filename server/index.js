@@ -66,7 +66,8 @@ var trembleServer = options => {
     try {
       var line = {
         result: 'failure',
-        id: undefined,
+        mergeid: undefined,
+        mergeUrl: undefined,
         commitId: undefined,
         commitUrl: undefined,
         commitAuthor: undefined,
@@ -92,7 +93,8 @@ var trembleServer = options => {
       switch (req.body.object_kind) {
         case 'merge_request':
           var merge = req.body.object_attributes;
-          line.id = '#' + merge.id;
+          line.mergeId = '#' + merge.iid;
+          line.mergeUrl = merge.url;
           line.commitId = merge.last_commit.id;
           line.commitUrl = merge.last_commit.url;
           line.commitAuthor = merge.last_commit.author;
